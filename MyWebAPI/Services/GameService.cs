@@ -35,8 +35,8 @@ namespace MyWebAPI.Services
             // Apply sorting
             query = sortBy?.ToLower() switch
             {
-                "price_desc" => query.OrderByDescending(g => g.Price),
-                "price" => query.OrderBy(g => g.Price),
+                "price_desc" => query.OrderByDescending(g => (double)g.Price),
+                "price" => query.OrderBy(g => (double)g.Price),
                 "title_desc" => query.OrderByDescending(g => g.Title),
                 _ => query.OrderBy(g => g.Title) // Default sort
             };
@@ -70,15 +70,15 @@ namespace MyWebAPI.Services
             };
         }
 
-        public async Task<GameDto> CreateGameAsync(CreateUpdateGameDto gameDto)
+        public async Task<GameDto> CreateGameAsync(CreateUpdateGameDto gameDto, int ownerId)
         {
-            // Map DTO to entity
             var game = new Game
             {
                 Title = gameDto.Title,
                 Genre = gameDto.Genre,
                 Price = gameDto.Price,
-                PublisherId = gameDto.PublisherId
+                PublisherId = gameDto.PublisherId,
+                OwnerId = ownerId // Assign owner
             };
 
             _context.Games.Add(game);
@@ -87,12 +87,15 @@ namespace MyWebAPI.Services
             return await GetGameByIdAsync(game.Id) ?? throw new InvalidOperationException();
         }
 
-        public async Task<bool> UpdateGameAsync(int id, CreateUpdateGameDto gameDto)
+        public async Task<bool> UpdateGameAsync(int id, CreateUpdateGameDto gameDto, int currentUserId, string role)
         {
             var game = await _context.Games.FindAsync(id);
             if (game == null) return false;
 
-            // Update entity properties
+            // Resource protection: Only Owner or Admin can update
+            if (game.OwnerId != currentUserId && role != "Admin")
+                throw new UnauthorizedAccessException();
+
             game.Title = gameDto.Title;
             game.Genre = gameDto.Genre;
             game.Price = gameDto.Price;
@@ -102,10 +105,14 @@ namespace MyWebAPI.Services
             return true;
         }
 
-        public async Task<bool> DeleteGameAsync(int id)
+        public async Task<bool> DeleteGameAsync(int id, int currentUserId, string role)
         {
             var game = await _context.Games.FindAsync(id);
             if (game == null) return false;
+
+            // Resource protection: Only Owner or Admin can delete
+            if (game.OwnerId != currentUserId && role != "Admin")
+                throw new UnauthorizedAccessException();
 
             _context.Games.Remove(game);
             await _context.SaveChangesAsync();

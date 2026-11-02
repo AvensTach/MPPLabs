@@ -11,5 +11,6 @@ namespace MyWebAPI.Data
         // DbSets representing database tables
         public DbSet<Game> Games { get; set; }
         public DbSet<Publisher> Publishers { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

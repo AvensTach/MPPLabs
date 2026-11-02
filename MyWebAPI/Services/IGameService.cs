@@ -11,12 +11,11 @@ namespace MyWebAPI.Services
         Task<GameDto?> GetGameByIdAsync(int id);
 
         // Creates a new game
-        Task<GameDto> CreateGameAsync(CreateUpdateGameDto gameDto);
+        Task<GameDto> CreateGameAsync(CreateUpdateGameDto gameDto, int ownerId);
 
         // Updates an existing game
-        Task<bool> UpdateGameAsync(int id, CreateUpdateGameDto gameDto);
-
+        Task<bool> UpdateGameAsync(int id, CreateUpdateGameDto gameDto, int currentUserId, string role);
         // Deletes a game by ID
-        Task<bool> DeleteGameAsync(int id);
+        Task<bool> DeleteGameAsync(int id, int currentUserId, string role);
     }
 }

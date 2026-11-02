@@ -26,6 +26,9 @@ namespace MyWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("TEXT");
 
@@ -56,6 +59,29 @@ namespace MyWebAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Publishers");
+                });
+
+            modelBuilder.Entity("MyWebAPI.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("MyWebAPI.Models.Game", b =>

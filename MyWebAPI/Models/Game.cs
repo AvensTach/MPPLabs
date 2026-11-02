@@ -19,5 +19,7 @@
 
         // Navigation property
         public Publisher? Publisher { get; set; }
+
+        public int OwnerId { get; set; }
     }
 }
