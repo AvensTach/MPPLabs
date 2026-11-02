@@ -1,7 +1,7 @@
 ﻿using MyWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace MyWebAPI.API.Data
+namespace MyWebAPI.Data
 {
     public class AppDbContext : DbContext
     {
