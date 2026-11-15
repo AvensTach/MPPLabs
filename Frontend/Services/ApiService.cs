@@ -15,10 +15,10 @@ namespace Frontend.Services
             _httpClient = httpClient;
 
             // Set base address depending on platform
-            // Android emulator uses 10.0.2.2 to access host's localhost
+            // Using HTTP and port 5197 to connect to the Docker container
             string baseAddress = DeviceInfo.Platform == DevicePlatform.Android
-                ? "https://10.0.2.2:7278"
-                : "https://localhost:7278"; // Update port to match your API
+            ? "http://10.0.2.2:5197"
+            : "http://localhost:5197";
 
             _httpClient.BaseAddress = new Uri(baseAddress);
         }

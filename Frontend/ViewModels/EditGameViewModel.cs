@@ -1,8 +1,8 @@
-﻿// ViewModels/EditGameViewModel.cs
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Frontend.Models;
 using Frontend.Services;
+using System.Collections.ObjectModel;
 
 namespace Frontend.ViewModels
 {
@@ -29,10 +29,35 @@ namespace Frontend.ViewModels
         [ObservableProperty]
         private string _price = string.Empty;
 
-        [ObservableProperty]
-        private string _publisherId = string.Empty;
+        public ObservableCollection<Publisher> Publishers { get; } = new();
 
-        // Triggered when GameToEdit is set by Shell navigation
+        [ObservableProperty]
+        private Publisher? _selectedPublisher;
+
+        [RelayCommand]
+        public async Task LoadPublishersAsync()
+        {
+            try
+            {
+                var publishers = await _apiService.GetPublishersAsync();
+                Publishers.Clear();
+                foreach (var pub in publishers)
+                {
+                    Publishers.Add(pub);
+                }
+
+                // Auto-select the existing publisher for the game being edited
+                if (GameToEdit != null)
+                {
+                    SelectedPublisher = Publishers.FirstOrDefault(p => p.Name == GameToEdit.PublisherName);
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", $"Failed to load publishers: {ex.Message}", "OK");
+            }
+        }
+
         partial void OnGameToEditChanged(Game? value)
         {
             if (value != null)
@@ -40,7 +65,7 @@ namespace Frontend.ViewModels
                 GameTitle = value.Title;
                 Genre = value.Genre;
                 Price = value.Price.ToString("F2");
-                PublisherId = value.PublisherId.ToString();
+                // SelectedPublisher is handled after publishers are loaded
             }
         }
 
@@ -55,9 +80,15 @@ namespace Frontend.ViewModels
                 return;
             }
 
-            if (!decimal.TryParse(Price, out decimal priceValue) || !int.TryParse(PublisherId, out int publisherIdValue))
+            if (SelectedPublisher == null)
             {
-                await Shell.Current.DisplayAlert("Error", "Invalid Price or Publisher ID format.", "OK");
+                await Shell.Current.DisplayAlert("Error", "Please select a publisher.", "OK");
+                return;
+            }
+
+            if (!decimal.TryParse(Price, out decimal priceValue))
+            {
+                await Shell.Current.DisplayAlert("Error", "Invalid Price format.", "OK");
                 return;
             }
 
@@ -70,14 +101,13 @@ namespace Frontend.ViewModels
                     Title = GameTitle,
                     Genre = Genre,
                     Price = priceValue,
-                    PublisherId = publisherIdValue
+                    PublisherId = SelectedPublisher.Id // Use the ID from the selected object
                 };
 
                 bool success = await _apiService.UpdateGameAsync(GameToEdit.Id, updatedData);
 
                 if (success)
                 {
-                    // Go back to the main catalog (double back to refresh)
                     await Shell.Current.GoToAsync("//MainPage");
                 }
                 else

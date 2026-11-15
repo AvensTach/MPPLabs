@@ -100,4 +100,13 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>(); // Replace AppDbContext with your actual DbContext class name
+    dbContext.Database.EnsureCreated();
+}
+
+app.Run();
+
 app.Run();

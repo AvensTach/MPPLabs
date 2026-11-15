@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: appplatform_api
+    ports:
+      - "5197:8080" 
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Data Source=/app/data/appdata.db
+      - JwtSettings__Secret=YourSuperSecretKeyWithAtLeast32CharactersLong!
+      - JwtSettings__Issuer=AppPlatformAPI
+      - JwtSettings__Audience=AppPlatformClients
+    volumes:
+      - sqldata:/app/data
+
+volumes:
+  sqldata:
