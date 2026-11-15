@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Frontend.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="Frontend.Views.CreateGamePage"
+             Title="{Binding Title}">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior EventName="Appearing" Command="{Binding LoadPublishersCommand}" />
+    </ContentPage.Behaviors>
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="30">
+
+            <Entry Placeholder="Game Title" 
+                   Text="{Binding GameTitle}" 
+                   IsEnabled="{Binding IsNotBusy}" />
+
+            <Entry Placeholder="Genre" 
+                   Text="{Binding Genre}" 
+                   IsEnabled="{Binding IsNotBusy}" />
+
+            <!-- Numeric keyboard for digits -->
+            <Entry Placeholder="Price (e.g. 29.99)" 
+                   Text="{Binding Price}" 
+                   Keyboard="Numeric"
+                   IsEnabled="{Binding IsNotBusy}" />
+
+            <Picker Title="Select Publisher" 
+                    ItemsSource="{Binding Publishers}" 
+                    ItemDisplayBinding="{Binding Name}" 
+                    SelectedItem="{Binding SelectedPublisher}"
+                    IsEnabled="{Binding IsNotBusy}" />
+
+
+            <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                <Button Grid.Column="0"
+                        Text="Back to Catalog" 
+                        Command="{Binding GoBackCommand}" 
+                        BackgroundColor="#424242" 
+                        TextColor="White" 
+                        Margin="0,20,0,0"/>
+
+                <Button Grid.Column="1"
+                        Text="Save Game" 
+                        Command="{Binding SaveCommand}" 
+                        BackgroundColor="#6200EE" 
+                        TextColor="White" 
+                        IsEnabled="{Binding IsNotBusy}" 
+                        Margin="0,20,0,0"/>
+            </Grid>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                               IsVisible="{Binding IsBusy}" 
+                               HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

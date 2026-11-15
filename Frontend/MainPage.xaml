@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Frontend.Models"
+             xmlns:viewmodels="clr-namespace:Frontend.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="Frontend.MainPage"
+             Title="{Binding Title}">
+
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior EventName="Appearing" Command="{Binding LoadGamesCommand}" />
+    </ContentPage.Behaviors>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding GoToCreateCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid>
+        <RefreshView IsRefreshing="{Binding IsBusy}" Command="{Binding LoadGamesCommand}">
+            <CollectionView ItemsSource="{Binding Games}" SelectionMode="None" Margin="10">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Game">
+                        <Frame Margin="5" Padding="15" CornerRadius="10" BackgroundColor="#2C2C2C">
+
+                            <!-- Tap gesture to open details -->
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=GoToDetailsCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+
+                            <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="*, Auto">
+                                <!-- Title and Genre -->
+                                <VerticalStackLayout Grid.Row="0" Grid.Column="0">
+                                    <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" TextColor="White" />
+                                    <Label Text="{Binding Genre}" FontSize="14" TextColor="LightGray" />
+                                </VerticalStackLayout>
+
+                                <!-- Price -->
+                                <Label Grid.Row="0" Grid.Column="1" 
+                                       Text="{Binding Price, StringFormat='${0:F2}'}" 
+                                       FontSize="18" FontAttributes="Bold" TextColor="#6200EE" 
+                                       VerticalOptions="Center" />
+
+                                <!-- Publisher -->
+                                <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                       Text="{Binding PublisherName, StringFormat='Publisher: {0}'}" 
+                                       FontSize="12" TextColor="Gray" Margin="0,10,0,0" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Loading indicator -->
+        <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                           IsVisible="{Binding IsBusy}" 
+                           HorizontalOptions="Center" 
+                           VerticalOptions="Center" />
+    </Grid>
+</ContentPage>

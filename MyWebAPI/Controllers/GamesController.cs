@@ -66,7 +66,6 @@ namespace MyWebAPI.Controllers
 
         [HttpDelete("{id}")]
         // Example of Policy-based authorization combined with manual resource checking
-        [Authorize(Policy = "RequireAdminRole")] // Uncomment if ONLY admins can delete
         public async Task<IActionResult> DeleteGame(int id)
         {
             try

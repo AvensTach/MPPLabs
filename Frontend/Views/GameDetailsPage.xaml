@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Frontend.ViewModels"
+             x:Class="Frontend.Views.GameDetailsPage"
+             Title="Game Details">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="30">
+
+            <Label Text="{Binding SelectedGame.Title}" FontSize="28" FontAttributes="Bold" />
+            <Label Text="{Binding SelectedGame.Genre, StringFormat='Genre: {0}'}" FontSize="18" />
+            <Label Text="{Binding SelectedGame.Price, StringFormat='Price: ${0:F2}'}" FontSize="22" TextColor="#6200EE" FontAttributes="Bold" />
+            <Label Text="{Binding SelectedGame.PublisherName, StringFormat='Publisher: {0}'}" FontSize="16" TextColor="Gray" />
+
+            <BoxView HeightRequest="1" Color="Gray" Margin="0,20" />
+
+            <Grid ColumnDefinitions="*, *, *" ColumnSpacing="10">
+                <!-- Back button -->
+                <Button Grid.Column="0" Text="Back" Command="{Binding GoBackCommand}" BackgroundColor="#424242" TextColor="White" />
+
+                <!-- Edit button -->
+                <Button Grid.Column="1" Text="Edit" Command="{Binding GoToEditCommand}" BackgroundColor="#6200EE" TextColor="White" IsEnabled="{Binding IsNotBusy}" />
+
+                <!-- Delete button -->
+                <Button Grid.Column="2" Text="Delete" Command="{Binding DeleteCommand}" BackgroundColor="Red" TextColor="White" IsEnabled="{Binding IsNotBusy}" />
+            </Grid>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                               IsVisible="{Binding IsBusy}" 
+                               HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

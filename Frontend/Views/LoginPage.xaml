@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Frontend.ViewModels"
+             x:Class="Frontend.Views.LoginPage"
+             Title="{Binding Title}">
+
+    <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+
+        <Label Text="Sign In to AppPlatform" 
+               FontSize="28" 
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
+
+        <!-- Binds to the Username property in LoginViewModel -->
+        <Entry Placeholder="Username" 
+               Text="{Binding Username}" 
+               IsEnabled="{Binding IsNotBusy}" />
+
+        <!-- Binds to the Password property, IsPassword hides the characters -->
+        <Entry Placeholder="Password" 
+               Text="{Binding Password}" 
+               IsPassword="True" 
+               IsEnabled="{Binding IsNotBusy}" />
+
+        <!-- Error message display -->
+        <Label Text="{Binding ErrorMessage}" 
+               TextColor="Red" 
+               HorizontalOptions="Center" />
+
+        <!-- Grid to hold both Register and Login buttons side by side -->
+        <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+            <!-- Register Button -->
+            <Button Grid.Column="0"
+                    Text="Register" 
+                    Command="{Binding RegisterCommand}" 
+                    BackgroundColor="#424242"
+                    TextColor="White"
+                    IsEnabled="{Binding IsNotBusy}" />
+
+            <!-- Login Button -->
+            <Button Grid.Column="1"
+                    Text="Login" 
+                    Command="{Binding LoginCommand}" 
+                    BackgroundColor="#6200EE"
+                    TextColor="White"
+                    IsEnabled="{Binding IsNotBusy}" />
+        </Grid>
+
+        <!-- Loading indicator -->
+        <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                           IsVisible="{Binding IsBusy}" 
+                           HorizontalOptions="Center" />
+
+    </VerticalStackLayout>
+</ContentPage>
